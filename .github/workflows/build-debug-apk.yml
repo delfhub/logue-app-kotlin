@@ -21,15 +21,15 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Accept SDK licenses and install API 37 platform
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "build-tools;37.0.0" || true
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME/cmdline-tools" || true
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses || true
+          "$SDKMANAGER" "platform-tools" "build-tools;37.0.0" || true
           # API 37 ships as a minor-versioned platform; try both spellings.
-          sdkmanager "platforms;android-37" || sdkmanager "platforms;android-37.0"
+          "$SDKMANAGER" "platforms;android-37" || "$SDKMANAGER" "platforms;android-37.0"
           ls "$ANDROID_HOME/platforms" || true
 
       - name: Build debug APK
